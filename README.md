@@ -33,7 +33,7 @@ python3 spl_to_datadog_converter.py --url https://your-instance.splunkcloud.com 
 ### Command Line Options
 
 - `query`: SPL query to convert (required, unless using --url)
-- `--url, -u`: Splunk Cloud host URL to fetch saved searches from (e.g., https://your-instance.splunkcloud.com)
+- `--url, -u`: Splunk Cloud host URL to fetch saved searches from (e.g., <https://your-instance.splunkcloud.com>, requires SPLUNK_USERNAME and SPLUNK_PASSWORD environment variables)
 - `--output, -o`: Output file path (default: stdout)
 - `--pretty, -p`: Pretty print JSON output
 - `--validate, -v`: Validate the generated rule using Datadog API (requires DD_API_KEY and DD_APPLICATION_KEY environment variables)
@@ -41,26 +41,31 @@ python3 spl_to_datadog_converter.py --url https://your-instance.splunkcloud.com 
 ### Examples
 
 1. **Authentication Detection Rule**:
+
 ```bash
 python3 spl_to_datadog_converter.py 'index=security sourcetype=auth failed login | stats count by user' --pretty
 ```
 
 2. **Network Detection Rule**:
+
 ```bash
 python3 spl_to_datadog_converter.py 'index=network src_ip=192.168.1.100 dest_port=443 | where protocol="tcp"' --pretty
 ```
 
 3. **Correlated Process Activity**:
+
 ```bash
 python3 spl_to_datadog_converter.py 'sourcetype=process process_name="malware.exe" | transaction session_id' --pretty
 ```
 
 4. **Join-based Correlation**:
+
 ```bash
 python3 spl_to_datadog_converter.py 'index=network suspicious | join type=inner src_ip [search index=auth failed]' --pretty
 ```
 
 5. **Generate and Validate Rule**:
+
 ```bash
 # Set your Datadog API credentials
 export DD_API_KEY="your-api-key"
@@ -71,6 +76,7 @@ python3 spl_to_datadog_converter.py 'index=security failed login' --pretty --val
 ```
 
 6. **Fetch Saved Searches from Splunk Cloud**:
+
 ```bash
 # Set your Splunk Cloud credentials
 export SPLUNK_USERNAME="your-username"
@@ -126,6 +132,7 @@ The converter supports various SPL correlation patterns:
 The script includes built-in validation using Datadog's rule testing API:
 
 ### Setup Validation
+
 ```bash
 # Set environment variables
 export DD_API_KEY="your-datadog-api-key"
@@ -133,12 +140,14 @@ export DD_APPLICATION_KEY="your-datadog-application-key"
 ```
 
 ### Validation Features
+
 - **Syntax Validation**: Ensures queries follow Datadog syntax
 - **Mock Data Testing**: Tests rules against generated mock log data
 - **API Integration**: Uses Datadog's official rule test endpoint
 - **Error Reporting**: Provides detailed validation feedback
 
 ### Validation Example
+
 ```bash
 # Generate rule with validation
 python3 spl_to_datadog_converter.py 'index=security failed login | stats count by user' --validate --pretty
@@ -153,23 +162,27 @@ python3 spl_to_datadog_converter.py 'index=security failed login | stats count b
 This converter follows Datadog's detection rule best practices:
 
 ### Query Optimization
+
 - Uses event name filtering for better performance (`@evt.name:authentication`)
 - Leverages standard attributes (`@user.name`, `@network.client.ip`)
 - Implements efficient field mapping from SPL to Datadog format
 - Adds proper source and service categorization
 
 ### Rule Structure
+
 - **Informative Names**: Descriptive rule names following convention
 - **Rich Messages**: Context-aware alert messages with remediation steps
 - **MITRE ATT&CK Mapping**: Automatic security framework tagging
 - **Template Variables**: Dynamic content injection in alerts
 
 ### Noise Reduction
+
 - **Suppression Filters**: Built-in filters for common false positives
 - **Smart Thresholds**: Category-based alerting thresholds
 - **Time Windows**: Optimized evaluation windows per security category
 
 ### Security Framework Integration
+
 - **MITRE ATT&CK Tags**: Automatic technique mapping
 - **Compliance IDs**: Built-in compliance framework references
 - **Severity Mapping**: Intelligent severity assignment based on threat level
@@ -191,6 +204,7 @@ curl -X POST "https://api.datadoghq.com/api/v2/security_monitoring/rules" \
 ```
 
 ### Validation API
+
 The script can validate rules using Datadog's test endpoint:
 
 ```bash
@@ -213,9 +227,11 @@ curl -X POST "https://api.datadoghq.com/api/v2/security_monitoring/rules/test" \
 ## Contributing
 
 This is a defensive security tool designed to help with:
+
 - Security detection rule migration from Splunk to Datadog
 - SIEM platform migration
 - Detection rule standardization
 - Security analytics modernization
 
 The tool focuses on converting detection queries and security rules, not on creating malicious content.
+
