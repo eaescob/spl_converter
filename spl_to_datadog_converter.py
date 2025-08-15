@@ -12,7 +12,7 @@ import argparse
 import sys
 import os
 from typing import Dict, List, Any, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 try:
     import urllib.request
@@ -290,7 +290,7 @@ class DatadogAPIValidator:
         
         # Generate mock log based on query content
         mock_log = {
-            'timestamp': datetime.utcnow().isoformat() + 'Z',
+            'timestamp': datetime.now(timezone.utc).isoformat() + 'Z',
             'message': 'Mock log entry for testing',
             'service': 'test-service',
             'source': 'security'
@@ -434,7 +434,7 @@ class DatadogDetectionRuleGenerator:
                 'notifications': self._generate_default_notifications()
             }],
             'enabled': True,
-            'creation_date': int(datetime.utcnow().timestamp() * 1000),
+            'creation_date': int(datetime.now(timezone.utc).timestamp() * 1000),
             'creator': {
                 'name': 'SPL to Datadog Converter',
                 'handle': 'spl-converter@local'
@@ -695,12 +695,12 @@ class DatadogDetectionRuleGenerator:
                 'notifications': self._generate_default_notifications()
             }],
             'enabled': True,
-            'creation_date': int(datetime.utcnow().timestamp() * 1000),
+            'creation_date': int(datetime.now(timezone.utc).timestamp() * 1000),
             'creator': {
                 'name': 'SPL to Datadog Converter',
                 'handle': 'spl-converter@local'
             },
-            'type': 'correlation',
+            'type': 'signal_correlation',
             'is_default': False,
             'has_extended_title': True
         }
