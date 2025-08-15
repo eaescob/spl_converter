@@ -25,11 +25,15 @@ python3 spl_to_datadog_converter.py 'index=network src_ip=192.168.1.100 | join d
 
 # Save output to file
 python3 spl_to_datadog_converter.py 'sourcetype=process malware' --output malware_rule.json
+
+# Fetch and convert saved searches from Splunk Cloud
+python3 spl_to_datadog_converter.py --url https://your-instance.splunkcloud.com --pretty
 ```
 
 ### Command Line Options
 
-- `query`: SPL query to convert (required)
+- `query`: SPL query to convert (required, unless using --url)
+- `--url, -u`: Splunk Cloud host URL to fetch saved searches from (e.g., https://your-instance.splunkcloud.com)
 - `--output, -o`: Output file path (default: stdout)
 - `--pretty, -p`: Pretty print JSON output
 - `--validate, -v`: Validate the generated rule using Datadog API (requires DD_API_KEY and DD_APPLICATION_KEY environment variables)
@@ -64,6 +68,16 @@ export DD_APPLICATION_KEY="your-app-key"
 
 # Generate and validate rule
 python3 spl_to_datadog_converter.py 'index=security failed login' --pretty --validate
+```
+
+6. **Fetch Saved Searches from Splunk Cloud**:
+```bash
+# Set your Splunk Cloud credentials
+export SPLUNK_USERNAME="your-username"
+export SPLUNK_PASSWORD="your-password"
+
+# Fetch and convert all saved searches
+python3 spl_to_datadog_converter.py --url https://your-instance.splunkcloud.com --output saved_searches_rules.json --pretty
 ```
 
 ## Security Categories Supported
@@ -105,6 +119,7 @@ The converter supports various SPL correlation patterns:
 - Python 3.6+
 - No external dependencies required
 - Datadog account with Security Monitoring enabled (for rule deployment and validation)
+- Splunk Cloud credentials (SPLUNK_USERNAME and SPLUNK_PASSWORD environment variables) when using --url flag
 
 ## Rule Validation
 
